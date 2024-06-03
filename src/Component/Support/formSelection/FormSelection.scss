@@ -1,0 +1,10 @@
+.form-section {
+    margin-left: 30%;
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+
+    .form-control {
+        margin-bottom: 30px;
+    }
+}
