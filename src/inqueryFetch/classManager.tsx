@@ -6,7 +6,7 @@ export const createCourse = async (data: Course) => {
     const res = await axios.post('https://www.mica.edu.vn/act/api/course/create', data
     )
 
-    return res.data
+    return res.data.courses
 }
 
 export const deleteCourse = async (data: number) => {
@@ -28,14 +28,14 @@ export const courseUpdate = async (data: Course) => {
     return res.data;
 }
 
-export const getDetailCourse = async (course_id: number) => {
+export const getDetailCourse = async (course_id: number) : Promise<Course> => {
 
-    const res = await axios.get(`https://www.mica.edu.vn/act/api/course/get/:id`, {
+    const res = await axios.get(`https://www.mica.edu.vn/act/api/course/get`, {
         params: {
             course_id: course_id
         }
     })
-    return res
+    return res.data
 }
 
 
@@ -145,7 +145,7 @@ export const deleteEx = async (course_id: number) => {
 export const updateExsercise = async (data: Exercises, exercise_id: number) => {
     const res = await axios.post('https://www.mica.edu.vn/act/api/exercise/update_info',
         {
-            name: data.exercise_name,
+            name: data.name,
             description: data.description,
             exercise_id: exercise_id
         }
@@ -160,7 +160,7 @@ export const getListExercise = async (course_id: number): Promise<Exercises[]> =
             course_id: course_id
         }
     });
-    return res.data;
+    return res.data.exercises;
 }
 
 

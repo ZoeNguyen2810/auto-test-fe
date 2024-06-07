@@ -6,8 +6,8 @@ import SignIn from './Component/Auth/SignUp/SignUp';
 import ForgotPass from './Component/Auth/Fogotpassword/forgotPass';
 import IconLogout from './Component/Auth/Login/iconLogout';
 
-import { Menu } from 'antd';
-import { BookOutlined, FormOutlined, HomeOutlined, LoginOutlined, QuestionCircleOutlined, ReadOutlined, ScheduleOutlined } from '@ant-design/icons';
+import { Menu, message } from 'antd';
+import { BookOutlined, FormOutlined, HomeOutlined, QuestionCircleOutlined, ReadOutlined, ScheduleOutlined } from '@ant-design/icons';
 import './App.scss';
 import { Home } from './Component/Home/Home';
 import { InfinityScroll } from './Component/Home/InfinityScroll/InfinityScroll';
@@ -23,13 +23,14 @@ import { AuthWrapper } from './AuthWrapper';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import Course from './Component/Course/Course';
 import CreateCourse from './Component/Course/CreateCourse';
+import CourseDetail from './Component/Course/CourseDetail/CourseDetail';
+import Cookies from 'js-cookie';
 
 function App() {
   const [currentPath, setCurrentPath] = useState('/'); // State để lưu trữ đường dẫn hiện tại
   const location = useLocation(); // Hook của react-router-dom để lấy đường dẫn hiện tại
   const navigate = useNavigate();
   const [show, setShow] = useState(true)
-
 
   useEffect(() => {
     setCurrentPath(location.pathname); // Cập nhật đường dẫn hiện tại khi location thay đổi
@@ -41,24 +42,22 @@ function App() {
   }, [location]);
 
   const handleNavigate = (key: string) => {
-    switch (key) {
-      case "/login":
-
-        navigate(key);
-        break;
-      case "/forgot-password":
-        navigate(key);
-        break
-
-      default:
-        navigate(key);
-        break;
+    if (key === '/logout') {
+      // Xóa UUID khỏi cookie
+      Cookies.remove('UUID');
+      // Hiển thị thông báo
+      message.success('Đăng xuất thành công');
+      // Điều hướng đến trang đăng nhập
+      navigate('/login');
+    } else {
+      navigate(key);
     }
   };
+
   const routes = useRoutes([
     {
       path: "/login",
-      element: <AuthWrapper><LogIn /></AuthWrapper>
+      element: <LogIn />
     }, {
       path: '/create-account',
       element: <SignIn />
@@ -102,6 +101,9 @@ function App() {
     },{
       path: '/teacher/create-Course',
       element: <CreateCourse />
+    } , {
+       path : '/course-detail/:id',
+       element : <AuthWrapper><CourseDetail /></AuthWrapper>
     }
   ])
 
@@ -120,11 +122,8 @@ function App() {
     { key: '/lesson-learn', label: "Lesson Learn", icon: <BookOutlined /> },
     // { key: '/teacher/manager-class', label: 'Classroom', icon: <ReadOutlined /> },
     { key: '/teacher/manager-Course', label: 'Course', icon: <ScheduleOutlined /> },
-
-
-    { key: '/login', label: 'Log Out', icon: <IconLogout /> }
+    { key: '/logout', label: 'Log Out', icon: <IconLogout /> } // Cập nhật key để xử lý logout
   ];
-  // const menu
 
   return (
     <>
@@ -148,7 +147,6 @@ function App() {
               ))}
             </Menu>
           </div>
-
         )
       }
     </>

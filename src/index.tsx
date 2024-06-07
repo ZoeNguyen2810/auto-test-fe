@@ -6,6 +6,8 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import { QueryClientProvider , QueryClient } from 'react-query';
 import { GlobalProvider } from './Context';
+import axios from 'axios';
+axios.defaults.withCredentials=true
 
 const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(

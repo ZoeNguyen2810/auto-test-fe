@@ -5,22 +5,34 @@ import { useMutation } from 'react-query'
 import { message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { Course } from '../../Type/Exercise'
-import { createCourse } from '../../inqueryFetch/classManager'
+import { createCourse , courseUpdate } from '../../inqueryFetch/classManager'
 import './CreateCourse.scss'
 
-const CreateCourse = () => {
+type Props = {
+    width?: number
+    marginLeft?: number
+    marginTop?: number,
+    course ? : Course
+}
+
+const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }) => {
     const { TextArea } = Input;
-    const { register, handleSubmit, formState: { errors }, control, watch , reset } = useForm<Course>()
+    const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<Course>()
 
     const navigate = useNavigate()
 
     const mutation = useMutation(createCourse, {
         onSuccess: (data) => {
-            console.log('User created successfully:', data);
-            if(data.error.code) {
-                message.error('Tạo tài khoản that bai')
-            }
-         
+            message.success('Tạo tài khoản thanh cong')
+        },
+        onError: (error) => {
+            console.error('Error creating user:', error);
+            message.error('Tạo tài khoản không thành công')
+        }
+    })
+    const mutationUpDate = useMutation( courseUpdate, {
+        onSuccess: (data) => {
+            message.success('Tạo tài khoản thanh cong')
         },
         onError: (error) => {
             console.error('Error creating user:', error);
@@ -29,18 +41,33 @@ const CreateCourse = () => {
     })
 
     const onSubmit = async (data: Course) => {
-        data.course_id = Math.floor(Math.random() * 1000)
-      console.log(data);
-      mutation.mutate(data)
-      reset()
-      navigate(-1)
+        console.log(data);
+        if (width) {
+            data.id = course?.id
+            mutationUpDate.mutate(data)
+            message.success('Cập nhật thông tin thành công')
+            console.log('Zoe check in here');
+            return;
+            
+        
+        }
+        // mutation.mutate(data)
+        // reset()
+        // navigate(-1)
     }
 
 
 
     return (
         <>
-            <Form layout='vertical' onFinish={handleSubmit(onSubmit)} className='Container'>
+            <Form layout='vertical' onFinish={handleSubmit(onSubmit)} className='Container' style={{
+                width: width ? width : '50%',
+                marginLeft: marginLeft ? marginLeft : '30%',
+                marginTop: marginTop ? marginTop : '10%'
+            }}>{
+                    !width && <Button onClick={() => navigate(-1)} type='primary' style={{ width: 100, marginBottom: 15 }}>Back</Button>
+
+                }
                 <Form.Item
                     label='Course Name'
                     validateStatus={errors.course_name ? "error" : ''}
@@ -50,7 +77,7 @@ const CreateCourse = () => {
                     <Controller
                         control={control}
                         name='course_name'
-                        defaultValue=''
+                        defaultValue={course?.course_name}
                         rules={{
                             required: 'Không được bỏ trống tên đăng nhập',
                             maxLength: {
@@ -58,7 +85,7 @@ const CreateCourse = () => {
                                 message: 'Độ dài tên không quá 50 kí tự'
                             }
                         }}
-                        render={({ field }) => <Input {...field} />} />
+                        render={({ field }) => <Input {...field}  />} />
                 </Form.Item>
                 <Form.Item
                     label="Mô tả"
@@ -69,7 +96,7 @@ const CreateCourse = () => {
                     <Controller
                         control={control}
                         name='description'
-                        defaultValue=''
+                        defaultValue={course?.description}
                         rules={{
                             required: 'Không được bỏ trống mật khẩu',
                             maxLength: {
@@ -88,7 +115,7 @@ const CreateCourse = () => {
                     <Controller
                         control={control}
                         name='code'
-                        defaultValue=''
+                        defaultValue={course?.code}
                         rules={{
                             required: '',
                             maxLength: {
@@ -99,7 +126,7 @@ const CreateCourse = () => {
                         render={({ field }) => <Input {...field} />} />
                 </Form.Item>
                 <Form.Item>
-                    <Button type='primary' htmlType='submit' style={{ marginLeft: '350px' , height : 40 , width : 150 }}>Tạo Lớp Học</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '350px', height: 40, width: 150 }}>{ width ? 'Chỉnh sửa khoá học' : 'Tạo khoá học'}</Button>
                 </Form.Item>
             </Form>
         </>

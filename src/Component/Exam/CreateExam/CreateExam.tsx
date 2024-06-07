@@ -32,13 +32,13 @@ const CreateExam = () => {
       >
         <Form.Item
           label="Title"
-          validateStatus={errors.exercise_name ? "error" : ""}
+          validateStatus={errors.name ? "error" : ""}
           required
-          help={errors.exercise_name ? errors.exercise_name.message : ""}
+          help={errors.name ? errors.name.message : ""}
         >
           <Controller
             control={control}
-            name="exercise_name"
+            name="name"
             defaultValue=""
             rules={{
               required: "Khong duoc bo trong",

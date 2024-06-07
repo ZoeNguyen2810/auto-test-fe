@@ -19,7 +19,9 @@ const LogIn: React.FC = () => {
         try {
 
             const res = await axios.post('https://www.mica.edu.vn/act/api/user/login', data);
-            const token = res.data.jwt
+            const token = res.data.user_info.enabled
+            
+
             // setIsLogged(res.data.user_info.enabled)
             message.success('Login Successfully')
             Cookies.set('UUID', token, { expires: 1 }); 

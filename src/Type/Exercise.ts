@@ -1,5 +1,5 @@
 export type Exercises = {
-   exercise_name: string
+   name: string
    description: string
    course_id: number
 }
@@ -16,7 +16,7 @@ export interface Course {
    course_name: string;
    description: string;
    code: string;
-   course_id?: number;
+   id?: number;
 }
 
 export interface Student {
