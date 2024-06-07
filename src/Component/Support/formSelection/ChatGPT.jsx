@@ -6,9 +6,7 @@ import { OpenAI } from "openai";
 
 export const ChatGPT = () => {
   const openai = new OpenAI({
-    organization: "org-JcBaCfmfICAngu1swKaV75yc",
-    apiKey: "",
-    // basePath: "https://api.openai.com",
+ 
     dangerouslyAllowBrowser: true,
   });
 
