@@ -5,7 +5,7 @@ import LogIn from './Component/Auth/Login/login';
 import SignIn from './Component/Auth/SignUp/SignUp';
 import ForgotPass from './Component/Auth/Fogotpassword/forgotPass';
 import IconLogout from './Component/Auth/Login/iconLogout';
-
+import ClassDetail from './Component/Teacher/Class/ClassDetail/ClassDetail';
 import { Menu, message } from 'antd';
 import { BookOutlined, FormOutlined, HomeOutlined, QuestionCircleOutlined, ReadOutlined, ScheduleOutlined } from '@ant-design/icons';
 import './App.scss';
@@ -18,9 +18,7 @@ import Lesson from './Component/Lesson/lesson';
 import CreateExam from './Component/Exam/CreateExam/CreateExam';
 import StudentTable from './Component/Teacher/managerStudent/StudentTable';
 import ClassTable from './Component/Teacher/Class/ClassTable';
-import { GlobalProvider } from './Context';
 import { AuthWrapper } from './AuthWrapper';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import Course from './Component/Course/Course';
 import CreateCourse from './Component/Course/CreateCourse';
 import CourseDetail from './Component/Course/CourseDetail/CourseDetail';
@@ -86,8 +84,8 @@ function App() {
       path: '/lesson-learn',
       element: <AuthWrapper><Lesson /></AuthWrapper>
     }, {
-      path: 'create-exercise',
-      element: <AuthWrapper><CreateExam /></AuthWrapper>
+      // path: 'create-exercise',
+      // element: <AuthWrapper><CreateExam /></AuthWrapper>
     }, {
       path: '/teacher/manager-student',
       element: <AuthWrapper><StudentTable /></AuthWrapper>
@@ -104,7 +102,10 @@ function App() {
     } , {
        path : '/course-detail/:id',
        element : <AuthWrapper><CourseDetail /></AuthWrapper>
-    }
+    }, {
+      path : '/class-detail/:id',
+      element : <AuthWrapper><ClassDetail /></AuthWrapper>
+   }
   ])
 
   const menuItems = [
@@ -122,6 +123,7 @@ function App() {
     { key: '/lesson-learn', label: "Lesson Learn", icon: <BookOutlined /> },
     // { key: '/teacher/manager-class', label: 'Classroom', icon: <ReadOutlined /> },
     { key: '/teacher/manager-Course', label: 'Course', icon: <ScheduleOutlined /> },
+    { key: '/teacher/course/class', label: 'Class', icon: <ScheduleOutlined /> },
     { key: '/logout', label: 'Log Out', icon: <IconLogout /> } // Cập nhật key để xử lý logout
   ];
 

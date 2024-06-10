@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Table, Modal, Form, Input, Button } from 'antd';
+import { Table, Modal, Form, Input, Button , message } from 'antd';
+import { useMutation } from 'react-query';
 
 interface Student {
     id: number;
@@ -16,6 +17,15 @@ interface Props {
 }
 
 const StudentTable: React.FC<Props> = ({ students }) => {
+    // const mutation = useMutation( , {
+    //     onSuccess: (data) => {
+    //         message.success('List of courses successfully loaded');
+    //     },
+    //     onError: (error) => {
+    //         console.log(error);
+    //         message.error('List of courses failed to load');
+    //     }
+    // });
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
 

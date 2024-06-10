@@ -1,3 +1,4 @@
+import { idText } from "typescript"
 import { Class, Course, Student, Exercises } from "../Type/Exercise"
 import axios from "axios"
 
@@ -9,10 +10,10 @@ export const createCourse = async (data: Course) => {
     return res.data.courses
 }
 
-export const deleteCourse = async (data: number) => {
+export const deleteCourse = async (id: number) => {
     const res = await axios.delete('https://www.mica.edu.vn/act/api/course/delete', {
         params: {
-            course_id: data
+            course_id: id
         }
     });
     return res.data;
@@ -28,7 +29,7 @@ export const courseUpdate = async (data: Course) => {
     return res.data;
 }
 
-export const getDetailCourse = async (course_id: number) : Promise<Course> => {
+export const getDetailCourse = async (course_id: number): Promise<Course> => {
 
     const res = await axios.get(`https://www.mica.edu.vn/act/api/course/get`, {
         params: {
@@ -40,9 +41,9 @@ export const getDetailCourse = async (course_id: number) : Promise<Course> => {
 
 
 // query class 
-export const getListClass = async (): Promise<Class[]> => {
+export const getListClass = async () => {
     const res = await axios.get('https://www.mica.edu.vn/act/api/class/list');
-    return res.data;
+    return res.data.classes;
 }
 
 export const createClass = async (data: Class) => {
@@ -51,14 +52,14 @@ export const createClass = async (data: Class) => {
     return res.data
 }
 export const deleteClass = async (class_id: number) => {
-    const res = await axios.delete('https://www.mica.edu.vn/act/api/class/create', {
-        params: {
-            class_id: class_id
-        }
-    })
+    const res = await axios.post('https://www.mica.edu.vn/act/api/class/delete', {
+        class_id: class_id
+    }
+    )
 
     return res.data
 }
+
 
 export const updateClass = async (data: Class) => {
     const res = await axios.post('https://www.mica.edu.vn/act/api/class/update_info', data)
@@ -67,16 +68,17 @@ export const updateClass = async (data: Class) => {
 }
 
 
-export const getDetail = async (class_id: number) => {
+export const getDetailClass = async (class_id: number) => {
     const res = await axios.get('https://www.mica.edu.vn/act/api/class/get', {
         params: {
             class_id: class_id
         }
     })
+    return res.data
 }
 
-export const addUsertoClass = async (class_id: number, user_id: number) => {
-    const res = await axios.post('https://www.mica.edu.vn/act/api/class/update_info', {
+export const addUsertoClass = async({ class_id, user_id }: { class_id: number, user_id: number }) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/class/add_user', {
         class_id: class_id,
         user_id: user_id
     })
@@ -84,12 +86,9 @@ export const addUsertoClass = async (class_id: number, user_id: number) => {
     return res.data
 }
 
-export const deleteUsertoClass = async (class_id: number, user_id: number) => {
-    const res = await axios.delete('https://www.mica.edu.vn/act/api/class/delete_user', {
-        params: {
-            class_id: class_id,
-            user_id: user_id
-        }
+export const deleteUsertoClass = async (student_id: number) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/class/delete_user', {
+        student_id: student_id
     })
     return res.data
 }
@@ -108,16 +107,22 @@ export const getListUserinClass = async (class_id: number): Promise<Student[]> =
             class_id: class_id
         }
     });
-    return res.data;
+    return res.data.students;
+}
+
+export const getAllStudent = async (): Promise<Student[]> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/student_list')
+
+    return res.data.students
 }
 
 
 
 
-export const getDetailExercise = async (exercise_id : number): Promise<Exercises[]> => {
+export const getDetailExercise = async (exercise_id: number): Promise<Exercises[]> => {
     const res = await axios.get('https://www.mica.edu.vn/act/api/exercise/get', {
         params: {
-            exercise_id : exercise_id
+            exercise_id: exercise_id
         }
     });
     return res.data;

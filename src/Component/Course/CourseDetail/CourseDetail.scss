@@ -1,8 +1,17 @@
 .demo-loadmore-list {
-    margin-left: 320px;
+    // margin-left: 320px;
+    padding-left: 300px;
+    padding-top: 10px;
     width: 60%;
     min-height: 350px;
-    margin-top: 20px;
+    padding-right: 350px;
+    background-image: url('https://papers.co/wallpaper/papers.co-sk13-cute-blue-blur-gradation-35-3840x2160-4k-wallpaper.jpg');
+    background-size: cover;
+    /* Ensures the image covers the entire container */
+    background-position: center;
+    /* Centers the image */
+    background-repeat: no-repeat;
+
 
     .content-container {
         display: flex;
@@ -11,13 +20,14 @@
     }
 
     .list-container {
-        height: 680px; // Set the height according to your design
+        height: 700px; // Set the height according to your design
         overflow-y: scroll;
         max-width: 700px;
         flex: 1;
-        border: 1.5px solid #5181ad; // Add border
+        // border: 1.5px solid #5181ad; // Add border
         border-radius: 5px; // Add rounded corners if desired
         padding: 16px; // Add padding for better appearance
+        background-color: aliceblue;
     }
 
     .list-container .ant-list-item-meta-title a {

@@ -1,3 +1,18 @@
-.Card-Title {
-    margin-left: 20%;
+.course {
+    .card {
+        background-image: url('../Teacher/Class/backGour.jpg');
+        background-size: cover;
+        padding-left: 100px;
+        /* Ensures the image covers the entire container */
+        background-position: center;
+        /* Centers the image */
+        background-repeat: no-repeat;
+        padding: 50px;
+
+        .Card-Title {
+            margin-left: 20%;
+            padding-left: 30px;
+        }
+    }
+
 }

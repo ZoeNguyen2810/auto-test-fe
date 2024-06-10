@@ -17,6 +17,8 @@ const gridStyle: React.CSSProperties = {
     height: '240px',
     textAlign: 'center',
     margin: '25px',
+    backgroundImage: 'none',
+    backgroundColor : 'white'
 };
 
 const logos = [<Logo />, <Logo1 />, <Logo2 />, <Logo3 />, <Logo4 />, <Logo5 />];
@@ -43,8 +45,8 @@ const Course: React.FC = () => {
     console.log(course);
 
     return (
-        <>
-            <Card title={
+        < div className='course'>
+            <Card className='card' title={
                 <div>
                     List of Course
                     <Button type='primary' onClick={() => navigate('/teacher/create-Course')} style={{ marginLeft: 15 }}>Create Course</Button>
@@ -53,7 +55,7 @@ const Course: React.FC = () => {
                 {
                     course.map((item, index) => {
                         return (
-                            <Card.Grid key={index} style={gridStyle} onClick={() => navigate(`/course-detail/${item.id}`)}>
+                            <Card.Grid className='card-item' key={index} style={gridStyle} onClick={() => navigate(`/course-detail/${item.id}`)}>
                                 <div style={{ marginBottom : 10 }}>{logos[index % logos.length]}</div>
                                 <div style={{ fontFamily : 'inherit' , fontSize : 20}}>{item.course_name}</div>
                             </Card.Grid>
@@ -61,7 +63,7 @@ const Course: React.FC = () => {
                     })
                 }
             </Card>
-        </>
+        </div>
     );
 };
 

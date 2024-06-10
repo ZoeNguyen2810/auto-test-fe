@@ -5,17 +5,17 @@ import { useMutation } from 'react-query'
 import { message } from 'antd'
 import { useNavigate } from 'react-router-dom'
 import { Course } from '../../Type/Exercise'
-import { createCourse , courseUpdate } from '../../inqueryFetch/classManager'
+import { createCourse, courseUpdate } from '../../inqueryFetch/classManager'
 import './CreateCourse.scss'
 
 type Props = {
     width?: number
     marginLeft?: number
     marginTop?: number,
-    course ? : Course
+    course?: Course
 }
 
-const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }) => {
+const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop, course }) => {
     const { TextArea } = Input;
     const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<Course>()
 
@@ -24,15 +24,19 @@ const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }
     const mutation = useMutation(createCourse, {
         onSuccess: (data) => {
             message.success('Tạo tài khoản thanh cong')
+            navigate('/teacher/manager-Course')
+
         },
         onError: (error) => {
             console.error('Error creating user:', error);
             message.error('Tạo tài khoản không thành công')
         }
     })
-    const mutationUpDate = useMutation( courseUpdate, {
+    const mutationUpDate = useMutation(courseUpdate, {
         onSuccess: (data) => {
             message.success('Tạo tài khoản thanh cong')
+            navigate('/teacher/manager-Course')
+
         },
         onError: (error) => {
             console.error('Error creating user:', error);
@@ -48,8 +52,8 @@ const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }
             message.success('Cập nhật thông tin thành công')
             console.log('Zoe check in here');
             return;
-            
-        
+
+
         }
         // mutation.mutate(data)
         // reset()
@@ -85,7 +89,7 @@ const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }
                                 message: 'Độ dài tên không quá 50 kí tự'
                             }
                         }}
-                        render={({ field }) => <Input {...field}  />} />
+                        render={({ field }) => <Input {...field} />} />
                 </Form.Item>
                 <Form.Item
                     label="Mô tả"
@@ -126,7 +130,7 @@ const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop , course }
                         render={({ field }) => <Input {...field} />} />
                 </Form.Item>
                 <Form.Item>
-                    <Button type='primary' htmlType='submit' style={{ marginLeft: '350px', height: 40, width: 150 }}>{ width ? 'Chỉnh sửa khoá học' : 'Tạo khoá học'}</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '350px', height: 40, width: 150 }}>{width ? 'Chỉnh sửa khoá học' : 'Tạo khoá học'}</Button>
                 </Form.Item>
             </Form>
         </>

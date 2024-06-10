@@ -16,3 +16,11 @@ export const changePassword = async ( data : forGotPassword) => {
 
     return res.data
 }
+export const getListUsers = async () => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/user/list' , {
+        params : {
+            enabled : true,
+            // paging.page : 50
+        }
+    })
+}

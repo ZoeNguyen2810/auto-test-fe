@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Button, List, Typography, message , Drawer , Modal } from 'antd';
+import { Avatar, Button, List, Typography, message, Drawer, Modal } from 'antd';
 import { ReactComponent as Logo } from '../exImg.svg';
 import './CourseDetail.scss';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -8,8 +8,9 @@ import { getListExercise, getDetailCourse, deleteCourse } from '../../../inquery
 import { Course, Exercises } from '../../../Type/Exercise';
 import { ReactComponent as Img1 } from './img1.svg';
 import { Card, Space } from 'antd';
-import { ContactsOutlined } from '@ant-design/icons';
+import { ContactsOutlined , RestOutlined } from '@ant-design/icons';
 import CreateCourse from '../CreateCourse';
+import CreateExam from '../../Exam/CreateExam/CreateExam';
 
 const { Text } = Typography;
 
@@ -19,6 +20,7 @@ const CourseDetail: React.FC = () => {
   const [excer, setEx] = useState<Exercises[]>([]);
   const [course, setCourse] = useState<Course>()
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addEx, setAddEx] = useState(false)
 
 
   const mutation = useMutation(getListExercise, {
@@ -40,7 +42,7 @@ const CourseDetail: React.FC = () => {
       message.error('Không thể lấy thông tin');
     }
   });
-  const mutationDelete = useMutation( deleteCourse, {
+  const mutationDelete = useMutation(deleteCourse, {
     onSuccess: (data) => {
       message.success('Xoá khoá học thành công');
       navigate(-1)
@@ -54,7 +56,8 @@ const CourseDetail: React.FC = () => {
 
   useEffect(() => {
     mutation.mutate(Number(id));
-    mutationCoures.mutate(Number(id))
+    const course_id = Number(id)
+    mutationCoures.mutate(course_id)
   }, [])
   console.log('Zoe data', course);
 
@@ -86,6 +89,9 @@ const CourseDetail: React.FC = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  const handleAddEx = () => {
+    showModal()
+  }
 
   return (
     <div className="demo-loadmore-list">
@@ -93,7 +99,7 @@ const CourseDetail: React.FC = () => {
         <Logo />
         <span style={{ fontSize: 20 }}>Danh sách bài tập:</span>
       </Typography>
-      <div style={{ fontSize: 18, color: '#446EB1', marginBottom: 10 }} onClick={() => navigate(-1)}>
+      <div style={{ fontSize: 18, color: '#446EB1', marginBottom: 10 }} onClick={() => navigate('/teacher/manager-Course')}>
         {'<- Back'}
       </div>
       <div className="content-container">
@@ -108,8 +114,8 @@ const CourseDetail: React.FC = () => {
                   title={<a href="https://ant.design">{item.title}</a>}
                   description={item.descrition}
                 />
-                <Button type='primary'>Delete</Button>
-                <Button style={{ marginLeft: 15 }}>Edit</Button>
+                <Button style={{ marginRight: 15 }}>Edit</Button>
+                <Button type='primary'><RestOutlined style={{ fontSize: 20}} /></Button>
               </List.Item>
             )}
           />
@@ -117,43 +123,50 @@ const CourseDetail: React.FC = () => {
         <div className="image-container">
           <Space direction="vertical" size={16}>
             <Card title={<div>
-              <ContactsOutlined style={{ fontSize : 20 , marginRight : 10}} />
+              <ContactsOutlined style={{ fontSize: 20, marginRight: 10 }} />
               Thông tin lớp học
-            </div>}  extra={<a onClick={showDrawer}>Chỉnh sửa</a>} style={{ width: 500 }}>
+            </div>} extra={<a onClick={showDrawer}>Chỉnh sửa</a>} style={{ width: 500, marginBottom: 15 }}>
               <div>
                 Tên lớp học :
               </div>
-              <p style={{ fontSize : 20}}>{course?.course_name}</p>
+              <p style={{ fontSize: 20 }}>{course?.course_name}</p>
               <div>
                 Giới thiệu :
               </div>
-              <p style={{ fontSize : 20}}>{course?.description}</p>
+              <p style={{ fontSize: 20 }}>{course?.description}</p>
               <div>
                 Mã bộ môn :
               </div>
-              <p style={{ fontSize : 20}}>{course?.code}</p>
-              
+              <p style={{ fontSize: 20 }}>{course?.code}</p>
+
             </Card>
           </Space>
           <span>
             <span>
-              <Button type='primary'>Tạo bài tập</Button>
+              <Button type='primary' style={{ margin: 15 }} onClick={() => {
+                setAddEx(true);
+                handleAddEx()
+              }}>Thêm bài tập</Button>
             </span>
+            {/* <span>
+              <Button >Danh Sach Sinh Vien</Button>
+            </span> */}
             <span>
-              <Button style={{ margin: 15 }}>Danh Sach Sinh Vien</Button>
-            </span>
-            <span>
-              <Button  type='primary' onClick={showModal}>Xoá khoá học</Button>
+              <Button onClick={() => {
+                setAddEx(false)
+                showModal()
+              }}>Xoá khoá học</Button>
             </span>
           </span>
           <Img1 />
         </div>
       </div>
-      <Drawer title="Chỉnh sửa khoá học : " onClose={onClose} open={open}  width={700}>
-        <CreateCourse width={550} marginLeft={50} marginTop={30} course={course}/>
+      <Drawer title="Chỉnh sửa khoá học : " onClose={onClose} open={open} width={700}>
+        <CreateCourse width={550} marginLeft={50} marginTop={30} course={course} />
+
       </Drawer>
-      <Modal title="Xác nhận việc xoá khoá học ?" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-        <p>Bạn có chắc chắn muốn xoá khoá học này ?</p>
+      <Modal title={addEx ? 'Thêm bài tập :' : 'Xác nhận việc xoá khoá học ?'} open={isModalOpen}  onOk={handleOk} onCancel={handleCancel} width={addEx ? 750 : 500}  footer={addEx ? null : undefined}>
+        {addEx ? <CreateExam course_id={Number(id)} mutation={mutation.mutate} closePopup={handleCancel}/> : <p>Bạn có chắc chắn muốn xoá khoá học này?</p>}
       </Modal>
     </div>
   );
