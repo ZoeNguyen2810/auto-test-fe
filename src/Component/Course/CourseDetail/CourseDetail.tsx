@@ -4,11 +4,11 @@ import { ReactComponent as Logo } from '../exImg.svg';
 import './CourseDetail.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from 'react-query';
-import { getListExercise, getDetailCourse, deleteCourse } from '../../../inqueryFetch/classManager';
+import { getListExercise, getDetailCourse, deleteCourse, deleteEx } from '../../../inqueryFetch/classManager';
 import { Course, Exercises } from '../../../Type/Exercise';
 import { ReactComponent as Img1 } from './img1.svg';
 import { Card, Space } from 'antd';
-import { ContactsOutlined , RestOutlined } from '@ant-design/icons';
+import { ContactsOutlined, RestOutlined } from '@ant-design/icons';
 import CreateCourse from '../CreateCourse';
 import CreateExam from '../../Exam/CreateExam/CreateExam';
 
@@ -20,7 +20,9 @@ const CourseDetail: React.FC = () => {
   const [excer, setEx] = useState<Exercises[]>([]);
   const [course, setCourse] = useState<Course>()
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenDeleteStudent, setIsModalOpenDeleteStudent] = useState(false);
   const [addEx, setAddEx] = useState(false)
+  const [idEx, setIdExer] = useState(0)
 
 
   const mutation = useMutation(getListExercise, {
@@ -46,7 +48,16 @@ const CourseDetail: React.FC = () => {
     onSuccess: (data) => {
       message.success('Xoá khoá học thành công');
       navigate(-1)
-      setCourse(data)
+    },
+    onError: (error) => {
+      console.error('Error creating user:', error);
+      message.error('Xoá khoá học không thành công');
+    }
+  });
+  const mutationDeleteEx = useMutation(deleteEx, {
+    onSuccess: (data) => {
+      mutation.mutate(Number(id))
+      message.success('Xoá khoá học thành công');
     },
     onError: (error) => {
       console.error('Error creating user:', error);
@@ -63,7 +74,8 @@ const CourseDetail: React.FC = () => {
 
   const data = excer.map(item => ({
     title: item.name,
-    descrition: item.description
+    descrition: item.description,
+    id: item.id
   }));
   const [open, setOpen] = useState(false);
 
@@ -80,16 +92,32 @@ const CourseDetail: React.FC = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
+  const showModalStudent = () => {
+    setIsModalOpenDeleteStudent(true);
+  };
 
   const handleOk = () => {
     onDelete()
     // setIsModalOpen(false);
+    setIsModalOpenDeleteStudent(false)
+  };
+  const handleOkStudent = () => {
+    // onDelete()
+    // setIsModalOpen(false);
+    mutationDeleteEx.mutate(idEx)
+    setIsModalOpenDeleteStudent(false)
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  const handleCancelStudent = () => {
+    setIsModalOpenDeleteStudent(false);
+  };
   const handleAddEx = () => {
+    showModal()
+  }
+  const handleDeleteStudent = () => {
     showModal()
   }
 
@@ -115,7 +143,10 @@ const CourseDetail: React.FC = () => {
                   description={item.descrition}
                 />
                 <Button style={{ marginRight: 15 }}>Edit</Button>
-                <Button type='primary'><RestOutlined style={{ fontSize: 20}} /></Button>
+                <Button type='primary' onClick={() => {
+                  setIdExer(Number(item.id))
+                  showModalStudent()
+                }}><RestOutlined style={{ fontSize: 20 }} /></Button>
               </List.Item>
             )}
           />
@@ -165,8 +196,11 @@ const CourseDetail: React.FC = () => {
         <CreateCourse width={550} marginLeft={50} marginTop={30} course={course} />
 
       </Drawer>
-      <Modal title={addEx ? 'Thêm bài tập :' : 'Xác nhận việc xoá khoá học ?'} open={isModalOpen}  onOk={handleOk} onCancel={handleCancel} width={addEx ? 750 : 500}  footer={addEx ? null : undefined}>
-        {addEx ? <CreateExam course_id={Number(id)} mutation={mutation.mutate} closePopup={handleCancel}/> : <p>Bạn có chắc chắn muốn xoá khoá học này?</p>}
+      <Modal title={addEx ? 'Thêm bài tập :' : 'Xác nhận việc xoá khoá học ?'} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={addEx ? 750 : 500} footer={addEx ? null : undefined}>
+        {addEx ? <CreateExam course_id={Number(id)} mutation={mutation.mutate} closePopup={handleCancel} /> : <p>Bạn có chắc chắn muốn xoá khoá học này?</p>}
+      </Modal>
+      <Modal title='Xoá bài tập' open={isModalOpenDeleteStudent} onOk={handleOkStudent} onCancel={handleCancelStudent}>
+        <p>Bạn có chắc chắn muốn xoá bài tập này ?</p>
       </Modal>
     </div>
   );

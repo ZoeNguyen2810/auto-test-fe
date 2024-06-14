@@ -1,5 +1,5 @@
 import { idText } from "typescript"
-import { Class, Course, Student, Exercises } from "../Type/Exercise"
+import { Class, Course, Student, Exercises, Exam } from "../Type/Exercise"
 import axios from "axios"
 
 
@@ -11,10 +11,8 @@ export const createCourse = async (data: Course) => {
 }
 
 export const deleteCourse = async (id: number) => {
-    const res = await axios.delete('https://www.mica.edu.vn/act/api/course/delete', {
-        params: {
-            course_id: id
-        }
+    const res = await axios.post('https://www.mica.edu.vn/act/api/course/delete', {
+        course_id: id
     });
     return res.data;
 }
@@ -77,7 +75,7 @@ export const getDetailClass = async (class_id: number) => {
     return res.data
 }
 
-export const addUsertoClass = async({ class_id, user_id }: { class_id: number, user_id: number }) => {
+export const addUsertoClass = async ({ class_id, user_id }: { class_id: number, user_id: number }) => {
     const res = await axios.post('https://www.mica.edu.vn/act/api/class/add_user', {
         class_id: class_id,
         user_id: user_id
@@ -136,12 +134,10 @@ export const createExsercise = async (data: Exercises) => {
 
 
 
-export const deleteEx = async (course_id: number) => {
-    const res = await axios.delete('https://www.mica.edu.vn/act/api/exercise/delete',
+export const deleteEx = async (exercise_id: number) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/exercise/delete',
         {
-            params: {
-                course_id: course_id
-            }
+            exercise_id: exercise_id
         }
     )
 
@@ -168,5 +164,26 @@ export const getListExercise = async (course_id: number): Promise<Exercises[]> =
     return res.data.exercises;
 }
 
+export const getListExam = async ( class_id : number): Promise<Exam[]> => {
+    const res =  await axios.get('https://www.mica.edu.vn/act/api/exam/list' , {
+        params :{
+            class_id : class_id
+        }
+    })
+    return res.data.exam
+}
 
-
+export const getDetailExam = async ( exam_id : number) => {
+    const res =  await axios.get('https://www.mica.edu.vn/api/exam/get' , {
+        params :{
+            exam_id : exam_id
+        }
+    })
+    return res.data
+}
+export const deleteExam = async ( exam_id : number) => {
+    const res =  await axios.post('https://www.mica.edu.vn/act/api/exam/delete' , {
+            exam_id : exam_id
+    })
+    return res.data
+}

@@ -23,6 +23,7 @@ import Course from './Component/Course/Course';
 import CreateCourse from './Component/Course/CreateCourse';
 import CourseDetail from './Component/Course/CourseDetail/CourseDetail';
 import Cookies from 'js-cookie';
+import CreateExamDrag from './Component/Teacher/Class/CreateExamDrag/CreateExamDrag';
 
 function App() {
   const [currentPath, setCurrentPath] = useState('/'); // State để lưu trữ đường dẫn hiện tại
@@ -105,7 +106,10 @@ function App() {
     }, {
       path : '/class-detail/:id',
       element : <AuthWrapper><ClassDetail /></AuthWrapper>
-   }
+   }, {
+    path : '/class/:id/list-exam',
+    element : <AuthWrapper><CreateExamDrag /></AuthWrapper>
+ }
   ])
 
   const menuItems = [

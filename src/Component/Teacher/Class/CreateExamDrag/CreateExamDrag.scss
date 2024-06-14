@@ -1,0 +1,92 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    color: white;
+
+    .left,
+    .right {
+        display: flex;
+        flex-direction: column;
+        overflow: auto;
+    }
+
+    .left {
+        width: 40%;
+    }
+
+    .right {
+        background-color: #e2e5ed;
+        width: 60%;
+    }
+
+    .header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+
+        .taskContainer {
+            width: 500px;
+            height: 850px;
+            background-color: #e2e5ed;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            border-radius: 5px;
+            justify-content: center;
+            align-items: center;
+            gap: 5px;
+            text-align: center;
+
+            .task {
+                width: 400px;
+                height: 60px;
+                background-color: #6f9fed;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+        }
+    }
+
+    .main {
+        flex-grow: 1;
+        width: 100%;
+        display: grid;
+        margin: 0 auto;
+        height: 800px;
+
+        .column {
+            border-radius: 6px;
+            margin: 5px;
+            display: flex;
+            flex-direction: column;
+
+            h1 {
+                text-align: center;
+            }
+
+            .tasks {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                justify-content: flex-start;
+                align-items: center;
+                border-radius: 5px;
+                overflow-y: auto;
+                height: 750px; // Adjust this height as needed
+
+                .taskRight {
+                    width: 700px;
+                    height: 200px;
+                    // overflow-y: auto;
+                    background-color: #ffffff;
+                    color: #050581;
+                    border-radius: 5px;
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+}

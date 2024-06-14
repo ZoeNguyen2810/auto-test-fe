@@ -118,7 +118,7 @@ const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup}) => {
             )}
           />
         </Form.Item> */}
-        <Button type="primary" htmlType="submit" style={{ marginLeft : '50%'}}>Create Topic</Button>
+        <Button type="primary" htmlType="submit" style={{ marginLeft : '50%'}}>Tạo bài tập </Button>
         
       </Form>
     </div>
