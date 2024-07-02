@@ -6,10 +6,12 @@ import { Content } from './Content/Content'
 
 export const Exam = () => {
   return (
-    <>
+    <div>
+      <div style={{ height : 250}}>
       <Image />
+      </div>
       <Content />
 
-    </>
+    </div>
   )
 }

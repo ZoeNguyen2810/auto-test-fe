@@ -1,39 +1,36 @@
-import React from 'react'
-import { Controller, useForm } from 'react-hook-form'
-import { SignUp } from '../../../Type/Auth'
-import { Form, Button, Input } from 'antd'
-import './SignUp.scss'
-import { createUser } from '../../../inqueryFetch/authFetch'
-import { useMutation } from 'react-query'
-import { message } from 'antd'
-import { useNavigate } from 'react-router-dom'
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { SignUp } from '../../../Type/Auth';
+import { Form, Button, Input, Select, message } from 'antd';
+import './SignUp.scss';
+import { createUser } from '../../../inqueryFetch/authFetch';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 
 const SignIn: React.FC = () => {
-    const { register, handleSubmit, formState: { errors }, control, watch , reset } = useForm<SignUp>()
+    const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<SignUp>();
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
 
     const mutation = useMutation(createUser, {
         onSuccess: (data) => {
             console.log('User created successfully:', data);
-            message.success('Tạo tài khoản thành công')
-            reset()
-            navigate('/login')
+            message.success('Tạo tài khoản thành công');
+            reset();
+            navigate('/login');
         },
         onError: (error) => {
             console.error('Error creating user:', error);
-            message.error('Tạo tài khoản không thành công')
+            message.error('Tạo tài khoản không thành công');
         }
-    })
+    });
 
     const onSubmit = async (data: SignUp) => {
-      console.log(data);
-      mutation.mutate(data)
-       
-    }
+        console.log(data);
+        mutation.mutate(data);
+    };
 
-    const watchPassword = watch('password')
-
+    const watchPassword = watch('password');
 
     return (
         <>
@@ -107,20 +104,22 @@ const SignIn: React.FC = () => {
                         defaultValue={1}
                         rules={{
                             required: 'Không được bỏ trống role người dùng',
-                            maxLength: {
-                                value: 8,
-                                message: 'Mật khẩu không dài quá 8 kí tự'
-                            }
                         }}
-                        render={({ field }) => <Input {...field} />} />
+                        render={({ field }) => (
+                            <Select {...field}>
+                                <Select.Option value={1}>Admin</Select.Option>
+                                <Select.Option value={2}>Giáo viên</Select.Option>
+                                <Select.Option value={3}>Học viên</Select.Option>
+                            </Select>
+                        )}
+                    />
                 </Form.Item>
                 <Form.Item>
-                    <Button type='primary' htmlType='submit' style={{ marginLeft: '150px' }}>Đăng Kí</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '200px', marginTop: 100 }}>Đăng Kí</Button>
                 </Form.Item>
             </Form>
         </>
+    );
+};
 
-    )
-}
-
-export default SignIn
+export default SignIn;

@@ -1,6 +1,8 @@
 import { idText } from "typescript"
-import { Class, Course, Student, Exercises, Exam } from "../Type/Exercise"
+import { Class, Course, Student, Exercises, Exam, Submission, StudentScore, SubmisType, TestCase, TestCaseData, SubmissionByString } from "../Type/Exercise"
+import { useGlobalContext } from "../Context"
 import axios from "axios"
+
 
 
 export const createCourse = async (data: Course) => {
@@ -164,26 +166,147 @@ export const getListExercise = async (course_id: number): Promise<Exercises[]> =
     return res.data.exercises;
 }
 
-export const getListExam = async ( class_id : number): Promise<Exam[]> => {
-    const res =  await axios.get('https://www.mica.edu.vn/act/api/exam/list' , {
-        params :{
-            class_id : class_id
+export const getListExam = async (class_id?: number): Promise<Exam[]> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/exam/list', {
+        params: {
+            class_id: class_id
         }
     })
     return res.data.exam
 }
+export const createExam = async (data: Exam) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/exam/create', data)
+    return res.data
+}
 
-export const getDetailExam = async ( exam_id : number) => {
-    const res =  await axios.get('https://www.mica.edu.vn/api/exam/get' , {
-        params :{
-            exam_id : exam_id
+export const getDetailExam = async (exam_id: number) => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/exam/get', {
+        params: {
+            exam_id: exam_id
         }
     })
     return res.data
 }
-export const deleteExam = async ( exam_id : number) => {
-    const res =  await axios.post('https://www.mica.edu.vn/act/api/exam/delete' , {
-            exam_id : exam_id
+export const deleteExam = async (exam_id: number) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/exam/delete', {
+        exam_id: exam_id
     })
     return res.data
 }
+
+export const updateExam = async (data: Exam) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/exam/update_info', data)
+    return res.data
+}
+export const getListExamStudent = async (): Promise<Exam[]> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/exam/list_all')
+    return res.data.exam
+}
+export const getSubmissionList = async (exam_id: number, class_id: number) => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/submission/list', {
+        params: {
+            exam_id: exam_id,
+            class_id: class_id
+        }
+    });
+    return res.data.submissions;
+}
+export const createSubmission = async (formData: FormData) => {
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    };
+  
+    const res = await axios.post(
+      "https://www.mica.edu.vn/act/api/submission/create",
+      formData,
+      config
+    );
+    return res.data;
+  };
+export const getListSubmissions = async ({ exam_id, exercise_id, class_id }: { exam_id: number, exercise_id: number, class_id: number }): Promise<StudentScore[]> => {
+
+    const res = await axios.get('https://www.mica.edu.vn/act/api/submission/list', {
+        params: {
+            exam_id: exam_id,
+            exercise_id: exercise_id,
+            class_id: class_id
+        }
+    })
+
+    return res.data.list_submission
+}
+
+export const getDetailSubmission = async (submission_id: string):Promise<SubmisType> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/submission/get', {
+        params: {
+            submission_id: submission_id
+        }
+    })
+    return res.data
+}
+export const getDetailSubmissionFile = async (submission_id: string) => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/submission/get-file', {
+        params: {
+            submission_id: submission_id
+        }
+    })
+    return res.data
+}
+
+export const getCheckSubmission = async ({ exam_id , exercise_id} : { exam_id : number , exercise_id : number}) => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/submission/check' , {
+        params : {
+            exam_id : exam_id,
+            exercise_id : exercise_id
+        }
+    })
+    return res.data
+}
+
+export const createTestCase = async ( testCase : TestCase) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/test_case/create', {
+        exercise_id : testCase.exercise_id,
+        test_cases :[ testCase.test_cases]
+
+    })
+    return res.data
+}
+
+export const getListTestCase = async (exercise_id : number):Promise<TestCaseData[]> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/test_case/list', {
+        params: {
+            exercise_id: exercise_id
+        }
+    })
+    return res.data.testcase
+}
+
+export const getDetailTestCase = async (test_case_id : number) => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/test_case/get', {
+        params: {
+            test_case_id: test_case_id
+        }
+    })
+    return res.data
+}
+
+export const deleteTestCase = async (test_case_id : number) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/test_case/delete', {
+        test_case_id : test_case_id
+    }
+    )
+    return res.data
+}
+
+export const getListUser = async () => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/user/list' )
+    return res.data
+}
+
+export const createSubmissionByPostString = async ( data : SubmissionByString) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/submission/create_bytext' , data)
+    return res.data
+}
+

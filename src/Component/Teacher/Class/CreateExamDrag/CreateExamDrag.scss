@@ -1,7 +1,7 @@
-.container {
+.containerCreateExam {
     display: flex;
     flex-direction: row;
-    height: 100vh;
+    margin-top: 20px;
     color: white;
 
     .left,
@@ -13,11 +13,13 @@
 
     .left {
         width: 40%;
+        margin-left: 220px;
     }
 
     .right {
         background-color: #e2e5ed;
-        width: 60%;
+        width: 48%;
+        margin-left: -40px;
     }
 
     .header {
@@ -40,8 +42,8 @@
             text-align: center;
 
             .task {
-                width: 400px;
-                height: 60px;
+                width: 370px;
+                height: 80px;
                 background-color: #6f9fed;
                 border-radius: 5px;
                 margin-bottom: 10px;

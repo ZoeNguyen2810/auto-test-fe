@@ -11,6 +11,7 @@ import { ReactComponent as Logo3 } from './courseImg04.svg';
 import { ReactComponent as Logo4 } from './course05.svg';
 import { ReactComponent as Logo5 } from './course06.svg';
 import './Course.scss';
+import { useGlobalContext } from '../../Context';
 
 const gridStyle: React.CSSProperties = {
     width: '240px',
@@ -18,12 +19,13 @@ const gridStyle: React.CSSProperties = {
     textAlign: 'center',
     margin: '25px',
     backgroundImage: 'none',
-    backgroundColor : 'white'
+    backgroundColor: 'white'
 };
 
 const logos = [<Logo />, <Logo1 />, <Logo2 />, <Logo3 />, <Logo4 />, <Logo5 />];
 
 const Course: React.FC = () => {
+    const { isRole } = useGlobalContext()
     const navigate = useNavigate();
     const [course, setSource] = useState<course[]>([]);
 
@@ -42,22 +44,24 @@ const Course: React.FC = () => {
         mutation.mutate();
     }, []);
 
-    console.log(course);
+    console.log('Zoe role', isRole);
 
     return (
         < div className='course'>
             <Card className='card' title={
                 <div>
                     List of Course
-                    <Button type='primary' onClick={() => navigate('/teacher/create-Course')} style={{ marginLeft: 15 }}>Create Course</Button>
+                    {
+                        isRole == 1 && <Button type='primary' onClick={() => navigate('/teacher/create-Course')} style={{ marginLeft: 15 }}>Create Course</Button>
+                    }
                 </div>
-            } style={{ marginLeft: 250 }}>
+            } style={{ marginLeft: 230 }}>
                 {
-                    course.map((item, index) => {
+                    course && course.map((item, index) => {
                         return (
                             <Card.Grid className='card-item' key={index} style={gridStyle} onClick={() => navigate(`/course-detail/${item.id}`)}>
-                                <div style={{ marginBottom : 10 }}>{logos[index % logos.length]}</div>
-                                <div style={{ fontFamily : 'inherit' , fontSize : 20}}>{item.course_name}</div>
+                                <div style={{ marginBottom: 10 }}>{logos[index % logos.length]}</div>
+                                <div style={{ fontFamily: 'inherit', fontSize: 20 }}>{item.course_name}</div>
                             </Card.Grid>
                         );
                     })

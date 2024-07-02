@@ -5,45 +5,39 @@ import { Link } from 'react-router-dom';
 import { Login } from '../../../Type/Auth';
 import { useGlobalContext } from '../../../Context';
 import { useNavigate } from 'react-router-dom';
-import logo from './Animation - 1717000936425.gif'
+import logo from './Animation - 1717000936425.gif';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import './login.scss'
+import './login.scss';
 
 const LogIn: React.FC = () => {
     const { register, handleSubmit, formState: { errors }, control, reset } = useForm<Login>();
-    const { isLogged, setIsLogged } = useGlobalContext()
-    const navigate = useNavigate()
+    const { setIsLogged, setIsRole } = useGlobalContext();
+    const navigate = useNavigate();
+
     const onSubmit = async (data: Login) => {
-        data.remember_login = true
+        data.remember_login = true;
         try {
-
             const res = await axios.post('https://www.mica.edu.vn/act/api/user/login', data);
-            const token = res.data.user_info.enabled
+            const token = res.data.user_info.enabled;
+            message.success('Login Successfully');
+            Cookies.set('UUID', token, { expires: 1 });
             
+            localStorage.setItem('Role', JSON.stringify(res.data.user_info.role));
+            localStorage.setItem('userId' , JSON.stringify(res.data.user_info.id))
 
-            // setIsLogged(res.data.user_info.enabled)
-            message.success('Login Successfully')
-            Cookies.set('UUID', token, { expires: 1 }); 
-            console.log(res);
-            
-            
-            reset()
-            navigate('/')
+            setIsLogged(true);
+            reset();
+            navigate('/');
         } catch (e) {
             console.log(e);
-            message.error('Đăng nhập không thành công xin vui lòng thử lại')
-            
-
-
+            message.error('Đăng nhập không thành công xin vui lòng thử lại');
         }
-    }
-    console.log('isLogged', isLogged);
-setIsLogged(true)
+    };
 
     return (
         <Form layout='vertical' onFinish={handleSubmit(onSubmit)} className='login'>
-            <img src={logo} alt="loading..." style={{ marginLeft : '23%' , fontSize : '30px'}} />
+            <img src={logo} alt="loading..." style={{ marginLeft: '23%', fontSize: '30px' }} />
             <Form.Item
                 label="UserName"
                 validateStatus={errors.username ? 'error' : ''}
@@ -54,16 +48,14 @@ setIsLogged(true)
                     name='username'
                     defaultValue=''
                     rules={{
-                        required: " Hãy nhập name",
+                        required: "Hãy nhập name",
                         maxLength: {
                             value: 255,
                             message: "Độ dài tối đa 255 kí tự"
                         }
                     }}
                     render={({ field }) => <Input {...field} />}
-
                 />
-
             </Form.Item>
             <Form.Item
                 label="Password"
@@ -75,7 +67,7 @@ setIsLogged(true)
                     name='password'
                     defaultValue=''
                     rules={{
-                        required: " Hãy nhập mật khẩu",
+                        required: "Hãy nhập mật khẩu",
                         maxLength: {
                             value: 8,
                             message: "Độ dài tối đa 8 kí tự"
@@ -85,15 +77,13 @@ setIsLogged(true)
                 />
             </Form.Item>
             <Form.Item>
-                <Button htmlType='submit' type='primary' style={{ marginLeft: '150px' }} >Login</Button>
+                <Button htmlType='submit' type='primary' style={{ marginLeft: '150px' }}>Login</Button>
             </Form.Item>
-            <div> Bạn chưa có tài khoản ?
-                <Link to='/create-account'>  Đăng Kí </Link>
+            <div>Bạn chưa có tài khoản?
+                <Link to='/create-account'> Đăng Kí</Link>
             </div>
-            <Link to="/forgot-password">Quên mật khẩu ?</Link>
-
-        </Form >
-       
+            <Link to="/forgot-password">Quên mật khẩu?</Link>
+        </Form>
     );
 };
 

@@ -4,18 +4,21 @@ import { ReactComponent as Logo } from '../exImg.svg';
 import './CourseDetail.scss';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useMutation } from 'react-query';
-import { getListExercise, getDetailCourse, deleteCourse, deleteEx } from '../../../inqueryFetch/classManager';
-import { Course, Exercises } from '../../../Type/Exercise';
+import { getListExercise, getDetailCourse, deleteCourse, deleteEx, createTestCase , getListTestCase } from '../../../inqueryFetch/classManager';
+import { Course, Exercises, TestCaseData } from '../../../Type/Exercise';
 import { ReactComponent as Img1 } from './img1.svg';
 import { Card, Space } from 'antd';
 import { ContactsOutlined, RestOutlined } from '@ant-design/icons';
 import CreateCourse from '../CreateCourse';
 import CreateExam from '../../Exam/CreateExam/CreateExam';
+import { useGlobalContext } from '../../../Context';
+import TestCaseComponent from '../../Exam/TestCase/TestCase';
 
 const { Text } = Typography;
 
 const CourseDetail: React.FC = () => {
   const { id } = useParams();
+  const { isRole } = useGlobalContext()
   const navigate = useNavigate();
   const [excer, setEx] = useState<Exercises[]>([]);
   const [course, setCourse] = useState<Course>()
@@ -23,6 +26,8 @@ const CourseDetail: React.FC = () => {
   const [isModalOpenDeleteStudent, setIsModalOpenDeleteStudent] = useState(false);
   const [addEx, setAddEx] = useState(false)
   const [idEx, setIdExer] = useState(0)
+  const [isAddTestCase, setIsAddTestCase] = useState(false)
+  const [listTestCase , setListTestCase] = useState<TestCaseData[]>([])
 
 
   const mutation = useMutation(getListExercise, {
@@ -54,6 +59,16 @@ const CourseDetail: React.FC = () => {
       message.error('Xoá khoá học không thành công');
     }
   });
+  const muationGetListTestCase = useMutation(getListTestCase, {
+    onSuccess: (data) => {
+        // setIsAddTestCase(false)
+        setListTestCase(data)
+    },
+    onError: (error) => {
+        console.error('Error creating user:', error);
+        message.error('Tạo không thành công');
+    }
+})
   const mutationDeleteEx = useMutation(deleteEx, {
     onSuccess: (data) => {
       mutation.mutate(Number(id))
@@ -64,6 +79,7 @@ const CourseDetail: React.FC = () => {
       message.error('Xoá khoá học không thành công');
     }
   });
+
 
   useEffect(() => {
     mutation.mutate(Number(id));
@@ -142,11 +158,20 @@ const CourseDetail: React.FC = () => {
                   title={<a href="https://ant.design">{item.title}</a>}
                   description={item.descrition}
                 />
-                <Button style={{ marginRight: 15 }}>Edit</Button>
-                <Button type='primary' onClick={() => {
+                {isRole == 1 && <Button style={{ marginRight: 10 }} type='primary'>Edit</Button>}
+                {isRole == 1 && <Button style={{ marginRight: 10 }} onClick={() => {
+                  setIsAddTestCase(true)
+                  setIdExer(Number(item.id))
+                  if( item.id) {
+                    muationGetListTestCase.mutate(item.id)
+                  }
+                  showDrawer()
+                
+                }} >Thêm test case</Button>}
+                {isRole == 1 && <Button type='primary' onClick={() => {
                   setIdExer(Number(item.id))
                   showModalStudent()
-                }}><RestOutlined style={{ fontSize: 20 }} /></Button>
+                }}><RestOutlined style={{ fontSize: 20 }} /></Button>}
               </List.Item>
             )}
           />
@@ -156,7 +181,10 @@ const CourseDetail: React.FC = () => {
             <Card title={<div>
               <ContactsOutlined style={{ fontSize: 20, marginRight: 10 }} />
               Thông tin lớp học
-            </div>} extra={<a onClick={showDrawer}>Chỉnh sửa</a>} style={{ width: 500, marginBottom: 15 }}>
+            </div>} extra={isRole == 1 && <a onClick={() => {
+              setIsAddTestCase(false)
+              showDrawer()
+            }}>Chỉnh sửa</a>} style={{ width: 500, marginBottom: 15 }}>
               <div>
                 Tên lớp học :
               </div>
@@ -174,30 +202,30 @@ const CourseDetail: React.FC = () => {
           </Space>
           <span>
             <span>
-              <Button type='primary' style={{ margin: 15 }} onClick={() => {
+              {isRole == 1 && <Button type='primary' style={{ margin: 15 }} onClick={() => {
                 setAddEx(true);
                 handleAddEx()
-              }}>Thêm bài tập</Button>
+              }}>Thêm bài tập</Button>}
             </span>
             {/* <span>
               <Button >Danh Sach Sinh Vien</Button>
             </span> */}
+            {isRole == 1 && <Button onClick={() => {
+              setAddEx(false)
+              showModal()
+            }}>Xoá khoá học</Button>}
             <span>
-              <Button onClick={() => {
-                setAddEx(false)
-                showModal()
-              }}>Xoá khoá học</Button>
+
             </span>
           </span>
           <Img1 />
         </div>
       </div>
-      <Drawer title="Chỉnh sửa khoá học : " onClose={onClose} open={open} width={700}>
-        <CreateCourse width={550} marginLeft={50} marginTop={30} course={course} />
-
+      <Drawer title={isAddTestCase === true ? 'Thêm test case' : "Chỉnh sửa khoá học : "} onClose={onClose} open={open} width={700}>
+        {isAddTestCase === true ? <TestCaseComponent isExer={idEx} listTestCase={listTestCase} mutation={muationGetListTestCase.mutate} setCloseDrawer={onClose} /> : <CreateCourse width={550} marginLeft={50} marginTop={30} course={course} />}
       </Drawer>
       <Modal title={addEx ? 'Thêm bài tập :' : 'Xác nhận việc xoá khoá học ?'} open={isModalOpen} onOk={handleOk} onCancel={handleCancel} width={addEx ? 750 : 500} footer={addEx ? null : undefined}>
-        {addEx ? <CreateExam course_id={Number(id)} mutation={mutation.mutate} closePopup={handleCancel} /> : <p>Bạn có chắc chắn muốn xoá khoá học này?</p>}
+        {addEx ? <CreateExam course_id={Number(id)} mutation={mutation.mutate} closePopup={handleCancel} isWidth={400} /> : <p>Bạn có chắc chắn muốn xoá khoá học này?</p>}
       </Modal>
       <Modal title='Xoá bài tập' open={isModalOpenDeleteStudent} onOk={handleOkStudent} onCancel={handleCancelStudent}>
         <p>Bạn có chắc chắn muốn xoá bài tập này ?</p>

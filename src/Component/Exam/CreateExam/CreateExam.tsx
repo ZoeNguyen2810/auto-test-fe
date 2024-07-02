@@ -15,10 +15,11 @@ const { TextArea } = Input;
 type Props = {
   course_id : number,
   mutation: ( course_id : number) => void;
-  closePopup : () => void
+  closePopup : () => void;
+  isWidth : number
 }
 
-const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup}) => {
+const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup , isWidth}) => {
   const {
     register,
     handleSubmit,
@@ -51,13 +52,14 @@ const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup}) => {
         layout="vertical"
         onFinish={handleSubmit(handleOnSubmit)}
         className="Additem"
-        style={{ width : '130%' , marginLeft : -170}}
+        style={{ width : '100%' , marginLeft : -170 ,}}
       >
         <Form.Item
           label="Title"
           validateStatus={errors.exercise_name ? "error" : ""}
           required
           help={errors.exercise_name ? errors.exercise_name.message : ""}
+          style={{ width : 600 , marginLeft : 200}}
         >
           <Controller
             control={control}
@@ -79,6 +81,7 @@ const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup}) => {
           validateStatus={errors.description ? "error" : ""}
           required
           help={errors.description ? errors.description.message : ""}
+          style={{ width : 600 , marginLeft : 200}}
         >
           <Controller
             control={control}
@@ -94,31 +97,7 @@ const CreateExam:React.FC<Props> = ({ course_id , mutation , closePopup}) => {
             render={({ field }) => <TextArea  rows={13} {...field} />}
           />
         </Form.Item>
-        {/* <Form.Item
-          label="Topic"
-          validateStatus={errors.course_id ? "error" : ""}
-          required
-          help={errors.course_id ? errors.course_id.message : ""}
-        >
-          <Controller
-            control={control}
-            name="course_id"
-            rules={{
-              required: "Khong duoc bo trong",
-              maxLength: {
-                value: 255,
-                message: "Do dai toi da 255 ki tu",
-              },
-            }}
-            render={({ field }) => (
-              <Select {...field}>
-                <Option value="1">Thuat Toan</Option>
-                <Option value="2">OOP</Option>
-              </Select>
-            )}
-          />
-        </Form.Item> */}
-        <Button type="primary" htmlType="submit" style={{ marginLeft : '50%'}}>Tạo bài tập </Button>
+        <Button type="primary" htmlType="submit" style={{ marginLeft : '70%'}}>Tạo bài tập </Button>
         
       </Form>
     </div>

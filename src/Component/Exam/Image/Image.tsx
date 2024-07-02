@@ -3,7 +3,7 @@ import './Image.scss'
 
 export const Image = () => {
     return (
-        <span style={{ display: 'flex' }} className='container'>
+        <span style={{ display: 'flex' }} className='containerImage'>
             <span className='img'>
                 <img
                     src="https://assets.leetcode.com/users/images/49479bba-73b3-45d2-9272-99e773d784b2_1687290663.3168745.jpeg"

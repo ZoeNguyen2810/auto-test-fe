@@ -1,7 +1,6 @@
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { GlobalContextProps } from "./Type/GlobleProps";
 
-// GlobalContext.tsx
-import React, { createContext, useContext, useState, ReactNode } from 'react';
 const GlobalContext = createContext<GlobalContextProps | undefined>(undefined);
 
 interface GlobalProviderProps {
@@ -9,10 +8,14 @@ interface GlobalProviderProps {
 }
 
 export const GlobalProvider: React.FC<GlobalProviderProps> = ({ children }) => {
-    const [ isLogged , setIsLogged] = useState(false);
-
+    const [isLogged, setIsLogged] = useState(false);
+    const [courseId, setCourseId] = useState(0);
+    const [isEditExam, setIsEditExam] = useState(false);
+    
+    const storedExamDetail = localStorage.getItem('Role');
+    const isRole = Number(storedExamDetail)
     return (
-        <GlobalContext.Provider value={{ isLogged , setIsLogged }}>
+        <GlobalContext.Provider value={{ isLogged, setIsLogged, courseId, setCourseId, isEditExam, setIsEditExam , isRole}}>
             {children}
         </GlobalContext.Provider>
     );

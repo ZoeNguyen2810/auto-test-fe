@@ -55,7 +55,7 @@ const CreateCourse: React.FC<Props> = ({ width, marginLeft, marginTop, course })
 
 
         }
-        // mutation.mutate(data)
+        mutation.mutate(data)
         // reset()
         // navigate(-1)
     }
