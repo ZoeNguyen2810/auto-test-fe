@@ -5,46 +5,8 @@ import AnswerSection from "./Answer/Answer";
 import { OpenAI } from "openai";
 
 export const ChatGPT = () => {
-  const openai = new OpenAI({
- 
-    dangerouslyAllowBrowser: true,
-  });
-
-  const [storedValues, setStoredValues] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-
-  const debouncedGenerateResponse = debounce(
-    async (newQuestion, setNewQuestion) => {
-      setIsLoading(true);
-      try {
-        const response = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [{ role: "user", content: newQuestion }],
-        });
-        console.log("response", response);
-
-        if (response.choices && response.choices.length > 0) {
-          setStoredValues([
-            {
-              question: newQuestion,
-              answer: response.choices[0].text,
-            },
-            ...storedValues,
-          ]);
-          setNewQuestion("");
-        }
-      } catch (error) {
-        console.error("Error generating response:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    1000 // Adjust the debounce delay as needed
-  );
-
-  const generateResponse = (newQuestion, setNewQuestion) => {
-    debouncedGenerateResponse(newQuestion, setNewQuestion);
-  };
+  
+   
 
   return (
     <>
@@ -63,11 +25,7 @@ export const ChatGPT = () => {
           </p>
         </div>
 
-        <FormSection
-          generateResponse={generateResponse}
-          isLoading={isLoading}
-        />
-        <AnswerSection storedValues={["qqwe", "qweqwe"]} />
+      
       </div>
     </>
   );
