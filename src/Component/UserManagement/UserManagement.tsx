@@ -1,104 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Table, Drawer, message, Modal } from 'antd';
-import type { TableColumnsType, TableProps, } from 'antd';
+import type { TableColumnsType, TableProps } from 'antd';
 import './UserManagement.scss';
 import { useMutation } from 'react-query';
-import { getListUsers } from '../../inqueryFetch/authFetch';
-import { getListUser } from '../../inqueryFetch/classManager';
+import { deleteUser, getListUser } from '../../inqueryFetch/classManager';
 import { FilterOutlined } from '@ant-design/icons';
 import SignIn from '../Auth/SignUp/SignUp';
+import Item from 'antd/es/list/Item';
+
+interface Users {
+    id: number;
+    username: string;
+    fullname: string;
+    role: number;
+    enabled: boolean;
+}
 
 interface DataType {
     key: React.Key;
     name: string;
-    age: number;
-    address: string;
+    fullname: string;
+    role: string;
 }
 
-
-const data: DataType[] = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-    {
-        key: '4',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '5',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '6',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '7',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-    {
-        key: '8',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-    {
-        key: '9',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-    },
-    {
-        key: '10',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-    },
-    {
-        key: '11',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sydney No. 1 Lake Park',
-    },
-    {
-        key: '12',
-        name: 'Jim Red',
-        age: 32,
-        address: 'London No. 2 Lake Park',
-    },
-];
-
 const onChange: TableProps<DataType>['onChange'] = (pagination, filters, sorter, extra) => {
-    console.log('params', pagination, filters, sorter, extra);
 };
 
 const UserManagement = () => {
     const [open, setOpen] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [ isEdit , setIsEdit] = useState(false)
+    const [isEdit, setIsEdit] = useState(false);
+    const [users, setUsers] = useState<Users[]>([]);
+    const [filteredUsers, setFilteredUsers] = useState<DataType[]>([]);
+    const [ idUser , setIdUser] = useState(0)
 
     const showDrawer = () => {
         setOpen(true);
@@ -107,120 +41,131 @@ const UserManagement = () => {
     const onClose = () => {
         setOpen(false);
     };
+    
 
     const mutationGetUsers = useMutation(getListUser, {
         onSuccess: (data) => {
-            // handle success logic here
+            // Ensure the data is an array
+            if (Array.isArray(data)) {
+                setUsers(data);
+                setFilteredUsers(mapUsersToDataType(data));
+            } else {
+                console.error('Fetched data is not an array:', data);
+                message.error('Fetched data is not an array');
+            }
         },
         onError: (error) => {
             console.error('Error fetching users:', error);
             message.error('Failed to fetch users');
         }
     });
+    const mutationDeleteUsers = useMutation( deleteUser, {
+        onSuccess: (data) => {
+            mutationGetUsers.mutate()
+           
+        },
+        onError: (error) => {
+          
+        }
+    });
 
     useEffect(() => {
-        // mutationGetUsers.mutate();
+        mutationGetUsers.mutate();
     }, []);
+
+    const getRoleName = (role: number): string => {
+        switch (role) {
+            case 1:
+                return 'Admin';
+            case 2:
+                return 'Giáo viên';
+            case 3:
+                return 'Học viên';
+            default:
+                return 'Unknown';
+        }
+    };
+
+    const mapUsersToDataType = (users: Users[]): DataType[] => {
+        return users.map(user => ({
+            key: user.id,
+            name: user.username,
+            fullname: user.fullname,
+            role: getRoleName(user.role),
+        }));
+    };
+
+    const filterUsersByRole = (role: string) => {
+        if (role === 'All') {
+            setFilteredUsers(mapUsersToDataType(users));
+        } else {
+            const filtered = mapUsersToDataType(users).filter(user => user.role === role);
+            setFilteredUsers(filtered);
+        }
+    };
+
     const columns: TableColumnsType<DataType> = [
         {
             title: 'Name',
             dataIndex: 'name',
-            filters: [
-                {
-                    text: 'Joe',
-                    value: 'Joe',
-                },
-                {
-                    text: 'Category 1',
-                    value: 'Category 1',
-                    children: [
-                        {
-                            text: 'Yellow',
-                            value: 'Yellow',
-                        },
-                        {
-                            text: 'Pink',
-                            value: 'Pink',
-                        },
-                    ],
-                },
-                {
-                    text: 'Category 2',
-                    value: 'Category 2',
-                    children: [
-                        {
-                            text: 'Green',
-                            value: 'Green',
-                        },
-                        {
-                            text: 'Black',
-                            value: 'Black',
-                        },
-                    ],
-                },
-            ],
+            filters: [],
             filterMode: 'tree',
             filterSearch: true,
             onFilter: (value, record) => record.name.includes(value as string),
-            width: '30%',
+            width: '300px',
         },
         {
-            title: 'Age',
-            dataIndex: 'age',
-            sorter: (a, b) => a.age - b.age,
+            title: 'Tên đầy đủ',
+            dataIndex: 'fullname',
+            width: '400px'
         },
         {
-            title: 'Address',
-            dataIndex: 'address',
-            filters: [
-                {
-                    text: 'London',
-                    value: 'London',
-                },
-                {
-                    text: 'New York',
-                    value: 'New York',
-                },
-            ],
-            onFilter: (value, record) => record.address.startsWith(value as string),
+            title: 'Vị trí',
+            dataIndex: 'role',
             filterSearch: true,
-            width: '40%',
+            width: '300px',
         },
         {
             title: 'Actions',
-            key: 'actions',
+            key: 'id',
             render: (_, record) => (
                 <span>
                     <Button type="link" onClick={() => {
-                        setIsEdit(true)
-                        showDrawer() }}>Edit</Button>
-                    <Button type="link" danger onClick={() => { showModal() }}>Delete</Button>
+                        setIsEdit(true);
+                        setIdUser(Number(record.key))
+                        showDrawer();
+                    }}>Edit</Button>
+                    <Button type="link" danger onClick={() => { showModal();
+                        setIdUser(Number(record.key))
+                        
+                     }}>Delete</Button>
                 </span>
             ),
         },
     ];
 
-
     const handleEdit = (record: DataType) => {
-        console.log('Edit record:', record);
         // handle edit logic here
     };
 
     const handleDelete = (record: DataType) => {
-        console.log('Delete record:', record);
         // handle delete logic here
     };
+
     const showModal = () => {
         setIsModalOpen(true);
     };
 
     const handleOk = () => {
+        mutationDeleteUsers.mutate(idUser)
         setIsModalOpen(false);
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+    console.log(isEdit);
+    
 
     return (
         <div className='container-table'>
@@ -228,19 +173,20 @@ const UserManagement = () => {
 
             <span style={{ display: 'flex', cursor: 'pointer' }}>
                 <Button type='primary' style={{ marginTop: 10 }} onClick={() => {
-                    setIsEdit(false)
-                    showDrawer()
+                    setIsEdit(false);
+                    showDrawer();
                 }}>Thêm người dùng</Button>
-                <h4 style={{ marginRight: 30, marginLeft: 30 }}><FilterOutlined /> Giáo Viên</h4>
-                <h4 style={{ marginRight: 30 }}><FilterOutlined /> Học Viên</h4>
+                <h4 style={{ marginRight: 30, marginLeft: 30, cursor: 'pointer' ,}} onClick={() => filterUsersByRole('All')}><FilterOutlined /> Tất cả</h4>
+                <h4 style={{ marginRight: 30, marginLeft: 30, cursor: 'pointer' }} onClick={() => filterUsersByRole('Giáo viên')}><FilterOutlined /> Giáo Viên</h4>
+                <h4 style={{ marginRight: 30, cursor: 'pointer' }} onClick={() => filterUsersByRole('Admin')}><FilterOutlined /> Quản trị viên</h4>
+                <h4 style={{ marginRight: 30, cursor: 'pointer' }} onClick={() => filterUsersByRole('Học viên')}><FilterOutlined /> Học Viên</h4>
             </span>
 
-            <Table columns={columns} dataSource={data} onChange={onChange} pagination={{ pageSize: 10 }} />;
-            <Drawer title={isEdit ? 'Sửa thông tin người dùng' : "Thêm người dùng" } onClose={onClose} open={open} width={700}>
-                <SignIn />
+            <Table columns={columns} dataSource={filteredUsers} onChange={onChange} pagination={{ pageSize: 10 }} />
+            <Drawer title={isEdit ? 'Sửa thông tin người dùng' : "Thêm người dùng"} onClose={onClose} open={open} width={700}>
+                <SignIn userInfo={idUser} isEdit={isEdit} closeDrawer={onClose} setListUser={mutationGetUsers.mutate} />
             </Drawer>
             <Modal title="Xác nhận việc xoá người dùng ?" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-
                 <p>Bạn có chắc chắn muốn xoá người dùng này ?</p>
             </Modal>
         </div>

@@ -1,5 +1,5 @@
 import { idText } from "typescript"
-import { Class, Course, Student, Exercises, Exam, Submission, StudentScore, SubmisType, TestCase, TestCaseData, SubmissionByString } from "../Type/Exercise"
+import { Class, Course, Student, Exercises, Exam, Submission, StudentScore, SubmisType, TestCase, TestCaseData, SubmissionByString, Users } from "../Type/Exercise"
 import { useGlobalContext } from "../Context"
 import axios from "axios"
 
@@ -300,8 +300,33 @@ export const deleteTestCase = async (test_case_id : number) => {
     return res.data
 }
 
-export const getListUser = async () => {
+export const getListUser = async ():Promise<Users[]> => {
     const res = await axios.get('https://www.mica.edu.vn/act/api/user/list' )
+    return res.data.users
+}
+
+export const getDetailUser = async ( user_id : number):Promise<Users> => {
+    const res = await axios.get('https://www.mica.edu.vn/act/api/user/get' , {
+        params : {
+            user_id : user_id
+        }
+    } )
+    return res.data.user_info
+}
+
+export const deleteUser = async (user_id : number) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/user/delete' , {
+        user_id : user_id
+    }
+    )
+    return res.data
+}
+export const updateUser = async ({ user_id ,fullname } : {user_id : number , fullname : string}) => {
+    const res = await axios.post('https://www.mica.edu.vn/act/api/user/update-info' , {
+        user_id : user_id,
+        fullname : fullname
+    }
+    )
     return res.data
 }
 

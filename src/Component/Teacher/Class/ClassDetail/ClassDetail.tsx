@@ -209,12 +209,12 @@ const ClassDetail = () => {
 
     return (
         <div style={{ display: 'flex' }} className='container1'>
-            {isRole == 1 &&
+            { (isRole == 1 || isRole == 2) &&
                 <Card className='card' title={<div> <Button type='link' onClick={() => navigate(-1)}><ArrowLeftOutlined /> Trở lại</Button><TeamOutlined style={{ fontSize: 20 }} />  Danh Sách Học Sinh :</div>} bordered={true}>
                     <ListStudent listStudent={students} class_id={Number(id)} mutation={mutationGetUser.mutate} />
                 </Card>
             }
-            {isRole != 1 &&
+            {isRole == 3 &&
                 <Card className='card' title={<div> <Button type='link' onClick={() => navigate(-1)}><ArrowLeftOutlined /> Trở lại</Button><TeamOutlined style={{ fontSize: 20 }} />  Danh sách bài kiểm tra :</div>} bordered={true}>
                     <List
                         dataSource={listEx}
@@ -263,7 +263,7 @@ const ClassDetail = () => {
                     </p>
                 </Card>
 
-                {isRole == 1 && <span>
+                {(isRole == 1 || isRole == 2) && <span>
                     <Button style={{ marginTop: 40 }} type='primary' onClick={showLoading} >Thêm học sinh</Button>
                     <Button style={{ marginLeft: 15 }} onClick={() => navigate(`/class/${id}/list-exam`)}> <FileProtectOutlined />Tạo bài kiểm tra </Button>
                     <Button style={{ marginLeft: 15 }} onClick={showExamDrawer} type='primary'> Danh sách bài kiểm tra </Button>

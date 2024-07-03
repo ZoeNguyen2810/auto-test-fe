@@ -164,7 +164,7 @@ const ClassTable: React.FC = () => {
     <>
       <div className="class-table-container">
         <h1 style={{ marginLeft: 250 }}>Danh sách lớp học:</h1>
-        {isRole == 1 && <Button type="primary" style={{ marginTop: 2, marginBottom: 10, marginLeft: 250 }} onClick={showDrawer}>
+        {(isRole == 1 || isRole == 2)&& <Button type="primary" style={{ marginTop: 2, marginBottom: 10, marginLeft: 250 }} onClick={showDrawer}>
           Thêm lớp học
         </Button>}
 

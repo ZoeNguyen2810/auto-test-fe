@@ -8,7 +8,7 @@ export type forGotPassword = {
     email: string;
 }
 export type SignUp = {
-    userName: string;
+    username: string;
     password: string;
     fullname : string;
     role: number

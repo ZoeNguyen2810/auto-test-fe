@@ -1,50 +1,96 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { SignUp } from '../../../Type/Auth';
 import { Form, Button, Input, Select, message } from 'antd';
 import './SignUp.scss';
 import { createUser } from '../../../inqueryFetch/authFetch';
 import { useMutation } from 'react-query';
-import { useNavigate } from 'react-router-dom';
+import { Users } from '../../../Type/Exercise';
+import { getDetailUser, updateUser } from '../../../inqueryFetch/classManager';
 
-const SignIn: React.FC = () => {
+type Props = {
+    userInfo?: number;
+    isEdit?: boolean;
+    closeDrawer : ( ) => void;
+    setListUser : ( ) => void;
+};
+
+const SignIn: React.FC<Props> = ({ userInfo, isEdit , closeDrawer , setListUser }) => {
     const { register, handleSubmit, formState: { errors }, control, watch, reset } = useForm<SignUp>();
-
-    const navigate = useNavigate();
+    const [userInfoDetail, setUser] = useState<Users>();
 
     const mutation = useMutation(createUser, {
         onSuccess: (data) => {
             console.log('User created successfully:', data);
             message.success('Tạo tài khoản thành công');
+            setListUser()
             reset();
-            navigate('/login');
         },
         onError: (error) => {
             console.error('Error creating user:', error);
             message.error('Tạo tài khoản không thành công');
         }
     });
+    const mutationUpdateUser = useMutation( updateUser, {
+        onSuccess: (data) => {
+            console.log('User created successfully:', data);
+            message.success('Tạo tài khoản thành công');
+            setListUser()
+            reset();
+        },
+        onError: (error) => {
+            console.error('Error creating user:', error);
+            message.error('Sửa thông tin thành công');
+        }
+    });
+
+    const mutationGetUserInfo = useMutation(getDetailUser, {
+        onSuccess: (data) => {
+            setUser(data);
+            reset(data);  // Update the form with the fetched data
+            
+        },
+        onError: (error) => {
+            console.error('Error fetching user details:', error);
+        }
+    });
 
     const onSubmit = async (data: SignUp) => {
+        if ( isEdit && userInfoDetail) {
+            mutationUpdateUser.mutate({ user_id : userInfoDetail?.id , fullname : data.fullname})
+            closeDrawer()
+            reset()
+            return
+        }
         console.log(data);
         mutation.mutate(data);
+        closeDrawer()
+        reset()
     };
 
-    const watchPassword = watch('password');
+    useEffect(() => {
+        if (isEdit === false) {
+            setUser(undefined);
+            reset(); // Clear the form values
+        } else if (userInfo) {
+            mutationGetUserInfo.mutate(Number(userInfo));
+        }
+    }, [userInfo, isEdit]);
 
     return (
         <>
             <Form layout='vertical' onFinish={handleSubmit(onSubmit)} className='SignUp'>
                 <Form.Item
                     label='Username'
-                    validateStatus={errors.userName ? "error" : ''}
+                    validateStatus={errors.username ? "error" : ''}
                     required
-                    help={errors.userName ? errors.userName.message : ''}
+                    help={errors.username ? errors.username.message : ''}
                 >
                     <Controller
                         control={control}
-                        name='userName'
-                        defaultValue=''
+                        name='username'
+                        disabled={isEdit}
+                        defaultValue={userInfoDetail?.username || ''}
                         rules={{
                             required: 'Không được bỏ trống tên đăng nhập',
                             maxLength: {
@@ -64,6 +110,7 @@ const SignIn: React.FC = () => {
                         control={control}
                         name='password'
                         defaultValue=''
+                        disabled={isEdit}
                         rules={{
                             required: 'Không được bỏ trống mật khẩu',
                             maxLength: {
@@ -82,9 +129,9 @@ const SignIn: React.FC = () => {
                     <Controller
                         control={control}
                         name='fullname'
-                        defaultValue=''
+                        defaultValue={userInfoDetail?.fullname || ''}
                         rules={{
-                            required: '',
+                            required: 'Không được bỏ trống tên đầy đủ',
                             maxLength: {
                                 value: 50,
                                 message: 'Tên dài không quá 50 kí tự'
@@ -101,7 +148,8 @@ const SignIn: React.FC = () => {
                     <Controller
                         control={control}
                         name='role'
-                        defaultValue={1}
+                        defaultValue={userInfoDetail?.role || undefined}
+                        disabled={isEdit}
                         rules={{
                             required: 'Không được bỏ trống role người dùng',
                         }}
@@ -115,7 +163,7 @@ const SignIn: React.FC = () => {
                     />
                 </Form.Item>
                 <Form.Item>
-                    <Button type='primary' htmlType='submit' style={{ marginLeft: '200px', marginTop: 100 }}>Đăng Kí</Button>
+                    <Button type='primary' htmlType='submit' style={{ marginLeft: '200px', marginTop: 100 }}>Submit</Button>
                 </Form.Item>
             </Form>
         </>

@@ -61,7 +61,7 @@ function App() {
 
   const routes = useRoutes([
     { path: "/login", element: <LogIn /> },
-    { path: '/create-account', element: <SignIn /> },
+    // { path: '/create-account', element: <SignIn /> },
     { path: '/forgot-password', element: <ForgotPass /> },
     { path: "/", element:<AuthWrapper><Home /></AuthWrapper>  },
     { path: "/infinity-scroll", element: <AuthWrapper><InfinityScroll /></AuthWrapper> },
@@ -87,7 +87,7 @@ function App() {
 
   const menuItems = [
     { key: '/', label: 'Home', icon: <HomeOutlined style={{ fontSize: 15 }} /> },
-    { key: '/user-management' , label : 'User Management', icon: <UserOutlined  style={{ fontSize: 15 }} /> , condition: isRole === 1 || isRole === 2},
+    { key: '/user-management' , label : 'User Management', icon: <UserOutlined  style={{ fontSize: 15 }} /> , condition: isRole === 1 },
     { key: '/exam', label: 'Exam', icon: <FormOutlined /> , condition: isRole === 3 },
     {
       key: '/support',

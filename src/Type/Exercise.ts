@@ -43,7 +43,7 @@ export type Exam = {
    description: string;
    exam_id?: number;
    questions: Array<number>;
-   exam_cont : checkSubmssion[]
+   exam_cont: checkSubmssion[]
 }
 
 export type Submission = {
@@ -51,8 +51,8 @@ export type Submission = {
    description: string
    student_id: number
    data_file: any
-   exercise_id : number
-class_id: number
+   exercise_id: number
+   class_id: number
 }
 
 export type checkSubmssion = {
@@ -71,7 +71,7 @@ export type StudentScore = {
    name: string;           // Name associated with the entry, possibly a test name
 };
 
-export type SubmisType  = {
+export type SubmisType = {
    date_time: string;
    score: string;
    description: string;
@@ -86,9 +86,9 @@ export type SubmisType  = {
 export type TestCase = {
    exercise_id: number;
    test_cases: {
-       input: string;
-       output: string;
-       run_time: number;
+      input: string;
+      output: string;
+      run_time: number;
    };
 };
 
@@ -101,12 +101,20 @@ export type TestCaseData = {
 };
 
 export type SubmissionByString = {
-   exam_id ?: number;
+   exam_id?: number;
    exercise_id: number;
    description: string;
    class_id: number;
    language?: "C" | "C++";
    source_code?: string;
- };
+};
+
+export type Users = {
+   id: number;
+   username: string;
+   fullname: string;
+   role: number;
+   enabled: boolean;
+}
 
 

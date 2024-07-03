@@ -52,7 +52,7 @@ const Course: React.FC = () => {
                 <div>
                     List of Course
                     {
-                        isRole == 1 && <Button type='primary' onClick={() => navigate('/teacher/create-Course')} style={{ marginLeft: 15 }}>Create Course</Button>
+                        (isRole == 1 || isRole == 2) && <Button type='primary' onClick={() => navigate('/teacher/create-Course')} style={{ marginLeft: 15 }}>Create Course</Button>
                     }
                 </div>
             } style={{ marginLeft: 230 }}>
